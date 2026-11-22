@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unlisted</title>
+<meta name="description" content="A free self-audit that shows where your personal details are exposed online and walks you through removing each one. Runs entirely in your browser.">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400..700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#view">Skip to your audit</a>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="#overview" aria-label="Unlisted, back to overview">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="2" y="4" width="20" height="4" rx="1" class="mark-hl"/>
+        <rect x="2" y="10" width="14" height="4" rx="1" class="mark-ink"/>
+        <rect x="2" y="16" width="18" height="4" rx="1" class="mark-ink"/>
+      </svg>
+      <span>Unlisted</span>
+    </a>
+    <div class="top-actions">
+      <span class="local-badge" title="Your details and progress are saved only in this browser.">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="7" width="10" height="7" rx="1.5" fill="currentColor"/></svg>
+        Stays on this device
+      </span>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch between light and dark">
+        <svg class="i-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="3.6" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 1.8v2M10 16.2v2M1.8 10h2M16.2 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"/></g></svg>
+        <svg class="i-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M15.8 12.6A6.6 6.6 0 0 1 7.4 4.2a6.6 6.6 0 1 0 8.4 8.4Z" fill="currentColor"/></svg>
+      </button>
+      <div class="menu">
+        <button class="btn sm" id="menuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menuList">Backup</button>
+        <div class="menu-list" id="menuList" hidden>
+          <button type="button" data-act="export" data-full>Download backup (.json)</button>
+          <button type="button" data-act="copy-backup">Copy backup to clipboard</button>
+          <button type="button" data-act="import">Restore from backup</button>
+          <button type="button" data-act="print" data-full>Print report</button>
+          <button type="button" data-act="ics" data-full>Add a 90-day re-check to my calendar</button>
+          <button type="button" data-act="reset" class="danger">Erase everything</button>
+        </div>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="intake" id="intake" data-mode="open" aria-label="Your details">
+    <div class="wrap intake-inner">
+      <div class="pitch">
+        <p class="eyebrow">Free self-audit · No account · Runs in your browser</p>
+        <h1>Find yourself before <span class="redact-word" tabindex="0">anyone</span> else does.</h1>
+        <p class="lead">Type in a few details. Unlisted turns them into a full exposure audit: people-search listings, accounts under your usernames, breached passwords, posts you're tagged in, photos that give away where you live. Then it walks you through erasing each one.</p>
+        <div class="ledger" aria-live="polite">
+          <div class="ledger-head">
+            <span id="ledgerIn">Your details</span>
+            <span class="ledger-arrow" aria-hidden="true">→</span>
+            <span><b id="ledgerOut">0</b> checks</span>
+          </div>
+          <ul id="ledgerRows"></ul>
+        </div>
+      </div>
+
+      <form class="intake-form" id="intakeForm" novalidate>
+        <div class="form-head">
+          <h2 class="form-title">Your details</h2>
+          <p class="hint">Only your name is required. Each extra detail adds more checks.</p>
+        </div>
+
+        <div class="field">
+          <label for="f-name">Full name <span class="req">Required</span></label>
+          <input id="f-name" name="name" autocomplete="name" placeholder="Jordan Avery Ellis" spellcheck="false">
+          <ul class="derived" id="d-name" aria-label="Name variants Unlisted will search"></ul>
+        </div>
+
+        <div class="field">
+          <label for="f-others">Other names you've used</label>
+          <input id="f-others" name="others" placeholder="Maiden name, previous last name, nickname" spellcheck="false">
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="f-city">City</label>
+            <input id="f-city" name="city" autocomplete="address-level2" placeholder="Columbus">
+          </div>
+          <div class="field">
+            <label for="f-state">State</label>
+            <select id="f-state" name="state" autocomplete="address-level1"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="f-emails">Email addresses</label>
+          <input id="f-emails" name="emails" inputmode="email" autocomplete="email" placeholder="you@gmail.com, old@school.edu" spellcheck="false">
+          <ul class="derived" id="d-emails" aria-label="Recognized emails and usernames derived from them"></ul>
+        </div>
+
+        <div class="field">
+          <label for="f-users">Usernames</label>
+          <input id="f-users" name="users" autocapitalize="off" placeholder="@handle, oldgamertag" spellcheck="false">
+          <ul class="derived" id="d-users" aria-label="Recognized usernames"></ul>
+        </div>
+
+        <div class="field">
+          <label for="f-phones">Phone numbers</label>
+          <input id="f-phones" name="phones" inputmode="tel" autocomplete="tel" placeholder="(614) 555-0142">
+          <ul class="derived" id="d-phones" aria-label="Recognized phone numbers"></ul>
+        </div>
+
+        <p class="hint">Separate several with commas.</p>
+        <p class="form-error" id="formError" role="alert" hidden></p>
+
+        <div class="form-foot">
+          <button class="btn primary lg" type="submit" id="buildBtn">Build my audit</button>
+          <button class="btn ghost" type="button" data-act="cancel-edit" id="cancelEdit" hidden>Cancel</button>
+        </div>
+        <p class="privacy-note">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="7" width="10" height="7" rx="1.5" fill="currentColor"/></svg>
+          Saved only in this browser. Nothing you type is uploaded.
+        </p>
+      </form>
+    </div>
+
+    <div class="wrap">
+      <div class="strip" id="strip"></div>
+    </div>
+  </section>
+
+  <section class="report" id="report" aria-label="Your audit">
+    <div class="wrap report-inner">
+      <div class="example-banner" id="exampleBanner" hidden>
+        <span><strong>Example audit.</strong> This is a made-up person, so the links are switched off. Enter your own details above to build yours.</span>
+        <a class="btn sm" href="#intake" data-act="to-form">Enter my details</a>
+      </div>
+      <nav class="index" id="index" aria-label="Audit sections"></nav>
+      <div class="view" id="view" tabindex="-1"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <p><strong>How Unlisted works.</strong> It has no database of people and it collects nothing. It turns the details you enter into searches, opt-out links and checklists, opens each site with your details filled in, and remembers your progress in this browser only.</p>
+    <p>Built for checking yourself, or a family member who asked you to help. Opt-out forms ask the person listed to confirm by email or phone.</p>
+    <p class="fine">Opt-out links checked November 2026. Brokers change their forms often. This is not legal advice.</p>
+  </div>
+</footer>
+
+<div class="modal" id="confirm" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
+  <div class="modal-card">
+    <h2 id="confirmTitle">Erase this audit?</h2>
+    <p>This deletes your details, every status you marked and your breach results from this browser. It can't be undone. Download a backup first if you might want it back.</p>
+    <div class="modal-actions">
+      <button class="btn" type="button" data-act="cancel-reset">Keep it</button>
+      <button class="btn danger" type="button" data-act="do-reset">Erase everything</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="print" aria-hidden="true"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
